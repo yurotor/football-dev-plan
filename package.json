@@ -1,0 +1,10 @@
+{
+  "name": "olim-rama",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "עולים רמה — football development tracker (Vercel + Upstash Redis)",
+  "dependencies": {
+    "@upstash/redis": "^1.34.3"
+  }
+}

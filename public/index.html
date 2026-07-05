@@ -556,9 +556,15 @@ function renderStreak(){
     dots.appendChild(el);
   }
   const next=MILESTONES.find(m=>m>cur);
-  $("#streak-milestone").innerHTML = next
-    ? "עוד <b>"+(next-cur)+"</b> ימים ליעד של "+next+" 🎁"
-    : "עברת את כל היעדים! אגדה 🐐";
+  let milestoneMsg;
+  if(!next) milestoneMsg="עברת את כל היעדים! אגדה 🐐";
+  else if(cur===0) milestoneMsg="היעד הבא: רצף של <b>"+next+"</b> ימים 🎁";
+  else{
+    const left=next-cur;
+    const daysTxt = left===1 ? "יום אחד" : left===2 ? "יומיים" : left+" ימים";
+    milestoneMsg="עוד <b>"+daysTxt+"</b> לרצף של "+next+" 🎁";
+  }
+  $("#streak-milestone").innerHTML=milestoneMsg;
 }
 
 /* ================= SESSION FORM ================= */

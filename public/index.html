@@ -91,12 +91,13 @@ h2.sec small{font-family:'Heebo';font-size:12px;font-weight:400;color:var(--ink-
 .streak-best{margin-top:8px;font-size:12px;color:var(--gold)}
 .dots{display:flex;justify-content:center;gap:6px;margin-top:14px;direction:rtl}
 .dot{
-  width:22px;height:22px;border-radius:7px;border:1px solid var(--line);
+  width:30px;height:30px;border-radius:9px;border:1px solid var(--line);
   background:var(--bg2);display:flex;align-items:center;justify-content:center;
-  font-size:10px;color:var(--ink-dim);
+  font-size:14px;font-weight:500;color:var(--ink-dim);
 }
 .dot.on{background:var(--lime);border-color:var(--lime);color:#07130C;font-weight:700}
 .dot.today{outline:2px solid var(--orange);outline-offset:1px}
+.dot.future{opacity:.3}
 .milestone{
   margin-top:12px;font-size:12px;color:var(--ink-dim);
   background:var(--bg2);border:1px dashed var(--line);border-radius:10px;padding:7px 10px;display:inline-block;
@@ -540,12 +541,18 @@ function renderStreak(){
   const set=activeDates();
   $("#streak-num").textContent=cur;
   $("#streak-best").textContent = best>0 ? "🏅 השיא: "+best+" ימים" : "התחילו רצף היום!";
+  // current week strip: Sunday (א) → Saturday (ש), Hebrew style, reads right-to-left
+  const WEEKDAYS=["א","ב","ג","ד","ה","ו","ש"]; // Sun..Sat
   const dots=$("#streak-dots"); dots.innerHTML="";
-  for(let i=13;i>=0;i--){
-    const ds=daysAgo(i);
+  const tstr=todayStr();
+  const base=new Date(tstr); base.setDate(base.getDate()-base.getDay()); // back to Sunday
+  for(let i=0;i<7;i++){
+    const d=new Date(base); d.setDate(base.getDate()+i);
+    const ds=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+    const isToday=ds===tstr, isFuture=ds>tstr;
     const el=document.createElement("div");
-    el.className="dot"+(set.has(ds)?" on":"")+(i===0?" today":"");
-    el.textContent=new Date(ds).getDate();
+    el.className="dot"+(set.has(ds)?" on":"")+(isToday?" today":"")+(isFuture?" future":"");
+    el.textContent=WEEKDAYS[i];
     dots.appendChild(el);
   }
   const next=MILESTONES.find(m=>m>cur);
